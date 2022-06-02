@@ -1,4 +1,4 @@
-# Scholarly Research Project 2021-2021
+# Scholarly Research Project 2021-2022
 
 ## Coding for Medicine Club members are working together on a scholarly research project under the guidance of Dr. Samantha
 
