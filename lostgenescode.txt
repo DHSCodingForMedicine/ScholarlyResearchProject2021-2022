@@ -1,0 +1,94 @@
+import java.io.*;
+import java.nio.Buffer;
+import java.util.*;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+//Sahil Chowdhury, Rushil Shah
+
+public class C4M {
+    static String[][] table;
+    static int[] counts;
+    static ArrayList<String> allGenes = new ArrayList<>();
+    public static void main(String[] args) throws IOException{//alphabetize before inputting and add to the very end of file
+        Scanner in = new Scanner(new File("website.in"));//reads genes from external file
+        Set<String> genes = new HashSet<>();//all genes that occur in website.in
+        int count = 0;//records the amount of genes
+        ArrayList<ArrayList<String>> geneList = new ArrayList<>();//geneList.get(i) returns a list of all genes found in the ith species of website.in (indexed from 0)
+        while(in.hasNext()){
+            String a = in.nextLine();
+            if(a.equals(""))
+                continue;
+            String[] tempGenes = a.split(" ");
+            genes.addAll(Arrays.asList(tempGenes));
+            geneList.add(new ArrayList<>());
+            for(String t : tempGenes){//inputs the ith species genes in geneList.get(i)
+                geneList.get(count).add(t);
+            }
+            Collections.sort(geneList.get(count));//sorts all genes across species in alphabetical order
+            count++;
+        }
+        allGenes = new ArrayList<>(genes);
+        Collections.sort(allGenes);
+        table = new String[count][genes.size()];//table to display similarities across species
+        counts = new int[genes.size()];//stores the frequencies of genes across species
+        /*for (int i = 0; i < allGenes.size(); i++) {
+            System.out.print(allGenes.get(i) + " ");
+        }*/
+        /*System.out.println();*/
+        System.out.println(allGenes);
+        for(int i = 0; i < count; i++){//generates the table and frequency list for output
+            ArrayList<String> tGenes = geneList.get(i);
+            int cnter = 0;
+            boolean def = false;
+            for (int j = 0; j < genes.size(); j++) {
+                if(def){
+                    table[i][j] = "-";
+                    continue;
+                }
+                String g1 = allGenes.get(j);
+                String g2 = tGenes.get(cnter);
+                if(g1.equals(g2)){
+                    counts[j]++;
+                    table[i][j] = "X";
+                    cnter++;
+                    if (cnter == tGenes.size()) {
+                        def = true;
+                    }
+                }
+                else{
+                    table[i][j] = "-";
+                }
+            }
+        }
+
+        System.out.println("Type 'table' if you wish to output a table denoting the similarities between genes of all species.");//user input
+        System.out.println("Type 'frequency' if you wish to simply identify the frequency of genes within all species");
+        in = new Scanner(System.in);
+        compareDNASeq(in.next());
+
+    }
+    //Outputs either a table displaying similarities between genes of species (X denoting similarity) or a frequency list denoting the frequency of a gene across all species
+    //String {input} - stores the type of output the user wants
+    //returns nothing, but instead outputs a table or frequency list according to user's request
+    public static void compareDNASeq(String input){
+        if(input.equals("table")){
+            for (int i = 0; i < table.length; i++) {
+                for (int j = 0; j < table[0].length; j++) {
+                    System.out.print(table[i][j]);
+                }
+                System.out.println();
+            }
+        }
+        else if (input.equals("frequency")){
+            for (int i = 0; i < counts.length; i++) {
+                System.out.print(counts[i]);
+            }
+        }
+        for(int i = 0; i < counts.length; i++){
+            if(counts[i] <= 4){
+                System.out.print(allGenes.get(i) + " ");
+            }
+        }
+    }
+}
